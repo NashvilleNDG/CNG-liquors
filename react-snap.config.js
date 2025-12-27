@@ -1,5 +1,5 @@
 module.exports = {
-  source: 'dist',
+  source: 'build',
   include: [
     '/',
     '/Home',
