@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "node -e \"const fs = require('fs'); if (!fs.existsSync('build')) fs.mkdirSync('build'); fs.copyFileSync('dist/index.html', 'build/index.html');\" && react-snap",
+    "postbuild": "node -e \"const fs = require('fs'); const path = require('path'); const buildDir = 'build'; if (fs.existsSync(buildDir)) { fs.readdirSync(buildDir).forEach(file => { fs.unlinkSync(path.join(buildDir, file)); }); } else { fs.mkdirSync(buildDir); } fs.copyFileSync('dist/index.html', 'build/index.html');\" && react-snap",
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "node server.js"
