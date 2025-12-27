@@ -502,24 +502,42 @@ function generateFullHTML(url) {
       <p style="font-size: 0.875rem; margin-top: 0.5rem;">Must be 21 or older to purchase. Please drink responsibly.</p>
     </footer>
   </div>
-  <script type="module" src="/src/main.jsx"></script>
+  <!-- React app will load from dist/assets/ -->
 </body>
 </html>`;
 }
 
 const app = express();
 
-// Serve static files from dist in production
+// Serve static files from dist in production (MUST be before catch-all route)
 if (isProduction) {
-  app.use(express.static(resolve(__dirname, 'dist')));
-  // Serve robots.txt and sitemap.xml
+  // Serve static assets (JS, CSS, images) from dist
+  app.use(express.static(resolve(__dirname, 'dist'), {
+    maxAge: '1y',
+    etag: true
+  }));
+  // Serve robots.txt and sitemap.xml from public
   app.use(express.static(resolve(__dirname, 'public')));
 } else {
   // In development, serve public files
   app.use(express.static(resolve(__dirname, 'public')));
 }
 
+// Catch-all route for HTML pages (only for non-asset requests)
 app.get('*', (req, res) => {
+  // Skip if this is a static asset request (should be handled by static middleware above)
+  if (req.path.startsWith('/assets/') || 
+      req.path.endsWith('.js') || 
+      req.path.endsWith('.css') || 
+      req.path.endsWith('.png') || 
+      req.path.endsWith('.jpg') || 
+      req.path.endsWith('.svg') ||
+      req.path.endsWith('.ico') ||
+      req.path.endsWith('.woff') ||
+      req.path.endsWith('.woff2')) {
+    return res.status(404).send('Not found');
+  }
+
   const userAgent = req.get('user-agent') || '';
   const isCrawler = /bot|crawler|spider|GPTBot|ChatGPT|Claude|Google-Extended|anthropic|BingBot|Slurp|DuckDuckBot|Baiduspider|Yandex|Sogou|Exabot|Facebot|ia_archiver|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora|pinterest|slackbot/i.test(userAgent);
   
@@ -532,10 +550,16 @@ app.get('*', (req, res) => {
     res.send(html);
   } else {
     // Serve React app for regular users
-    const template = isProduction
-      ? fs.readFileSync(resolve(__dirname, 'dist/index.html'), 'utf-8')
-      : fs.readFileSync(resolve(__dirname, 'index.html'), 'utf-8');
-    res.send(template);
+    try {
+      const template = isProduction
+        ? fs.readFileSync(resolve(__dirname, 'dist/index.html'), 'utf-8')
+        : fs.readFileSync(resolve(__dirname, 'index.html'), 'utf-8');
+      res.set('Content-Type', 'text/html');
+      res.send(template);
+    } catch (error) {
+      console.error('Error reading index.html:', error);
+      res.status(500).send('Error loading page');
+    }
   }
 });
 
