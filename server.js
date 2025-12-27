@@ -546,6 +546,18 @@ if (isProduction) {
   app.use(express.static(resolve(__dirname, 'public')));
 }
 
+// Redirect non-www to www (before catch-all route)
+app.use((req, res, next) => {
+  const host = req.get('host') || '';
+  // If request comes to bare domain (cngliquors.com), redirect to www
+  if (host === 'cngliquors.com' || host.startsWith('cngliquors.com:')) {
+    const protocol = req.protocol || 'https';
+    const redirectUrl = `${protocol}://www.cngliquors.com${req.originalUrl}`;
+    return res.redirect(301, redirectUrl);
+  }
+  next();
+});
+
 // Catch-all route for HTML pages
 // This must come AFTER static middleware so static files are served first
 // Use app.use() for Express 5 compatibility (catches all methods and paths)
