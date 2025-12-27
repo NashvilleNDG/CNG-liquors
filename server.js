@@ -542,8 +542,28 @@ if (isProduction) {
 
 // Catch-all route for HTML pages
 // This must come AFTER static middleware so static files are served first
-// Use '/*' instead of '*' for Express 5 compatibility
-app.get('/*', (req, res) => {
+// Use app.use() for Express 5 compatibility (catches all methods and paths)
+app.use((req, res, next) => {
+  // Only handle GET requests for HTML pages
+  if (req.method !== 'GET') {
+    return next();
+  }
+  
+  // Skip if this is a static asset request (should be handled by static middleware above)
+  if (req.path.startsWith('/assets/') || 
+      req.path.endsWith('.js') || 
+      req.path.endsWith('.css') || 
+      req.path.endsWith('.png') || 
+      req.path.endsWith('.jpg') || 
+      req.path.endsWith('.svg') ||
+      req.path.endsWith('.ico') ||
+      req.path.endsWith('.woff') ||
+      req.path.endsWith('.woff2') ||
+      req.path === '/robots.txt' ||
+      req.path === '/sitemap.xml') {
+    return next();
+  }
+
   const userAgent = req.get('user-agent') || '';
   const isCrawler = /bot|crawler|spider|GPTBot|ChatGPT|Claude|Google-Extended|anthropic|BingBot|Slurp|DuckDuckBot|Baiduspider|Yandex|Sogou|Exabot|Facebot|ia_archiver|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora|pinterest|slackbot/i.test(userAgent);
   
