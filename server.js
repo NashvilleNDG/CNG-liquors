@@ -517,11 +517,10 @@ const app = express();
 // Serve static files from dist in production (MUST be before catch-all route)
 if (isProduction) {
   // Serve static assets (JS, CSS, images) from dist
-  // This will automatically serve index.html for root route
-  app.use(express.static(resolve(__dirname, 'dist'), {
+  // IMPORTANT: Don't let Express serve index.html automatically - we handle it in catch-all
+  app.use('/assets', express.static(resolve(__dirname, 'dist/assets'), {
     maxAge: '1y',
-    etag: true,
-    index: 'index.html'
+    etag: true
   }));
   // Serve robots.txt and sitemap.xml from public
   app.use(express.static(resolve(__dirname, 'public')));
