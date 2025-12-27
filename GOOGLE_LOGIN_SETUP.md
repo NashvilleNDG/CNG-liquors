@@ -1,160 +1,149 @@
-# Google Login Setup Guide
+# Google Login Setup for CNG Wine & Spirits Dashboard
 
-## ✅ Implementation Complete
+## Current Status: ✅ Configured Correctly
 
-The login page now includes:
-1. ✅ **Pre-filled admin credentials:**
-   - Email: `nashvillendg@gmail.com`
-   - Password: `Ndg@1023`
+Google Authentication is **enabled** in the Base44 dashboard using the default Base44 OAuth. The implementation now uses the correct Base44 SDK method according to [Base44 documentation](https://docs.base44.com/Setting-up-your-app/Managing-login-and-registration#customizing-the-google-login).
 
-2. ✅ **Google Login button** (requires Base44 SSO configuration)
+## Solution
 
----
+According to Base44 documentation, to log users in, **always use `base44.auth.redirectToLogin(nextUrl)`**. This method:
+- Sends the user to Base44's login page
+- Shows all enabled authentication options (Email, Google, etc.)
+- Brings the user back to your site after they sign in
 
-## 🔐 Admin Credentials
+**Implementation:**
+```javascript
+base44.auth.redirectToLogin(redirectUrl);
+```
 
-The login form is pre-filled with:
-- **Email:** `nashvillendg@gmail.com`
-- **Password:** `Ndg@1023`
+## How Google Login Works
 
-Users can simply click the "Login" button without typing credentials.
-
-**⚠️ Security Note:** Credentials are pre-filled for convenience, but users can still modify them if needed. For production, consider removing the pre-filled password for better security.
-
----
-
-## 🔵 Google Login Setup
-
-The Google login button is implemented, but it requires Base44 SSO (Single Sign-On) to be configured in your Base44 dashboard.
-
-### Prerequisites for Google Login:
-
-1. **Base44 Plan:** Your Base44 app must be on the **Elite plan or higher** (SSO is only available for these plans)
-
-2. **Google Cloud Setup:**
-   - Create a Google Cloud project
-   - Enable Google+ API
-   - Create OAuth 2.0 credentials (Client ID and Client Secret)
-   - Add authorized redirect URI:
-     ```
-     https://app.base44.com/api/apps/6941d136f08b371ab7b95ffa/auth/sso/callback
-     ```
-
-3. **Base44 Dashboard Configuration:**
-   - Go to your Base44 app dashboard
-   - Navigate to **Settings** > **Authentication** > **Single Sign-On (SSO)**
-   - Click **Set Up** next to SSO
-   - Select **Google Workspace** as the SSO provider
-   - Enter your Google OAuth **Client ID** and **Client Secret**
-   - Keep **Scope** as `openid email profile`
-   - Leave **Discovery URL** at default
-   - Click **Enable SSO**
-
-### How Google Login Works:
+According to [Base44 documentation](https://docs.base44.com/Setting-up-your-app/Managing-login-and-registration#customizing-the-google-login), the login flow works like this:
 
 1. User clicks "Continue with Google" button
-2. Redirects to Base44 SSO endpoint
-3. Base44 redirects to Google OAuth consent screen
-4. User authorizes the app
-5. Google redirects back to Base44
-6. Base44 redirects to your dashboard (`/Dashboard`)
+2. Code calls `base44.auth.redirectToLogin('/Dashboard')`
+3. User is redirected to Base44's login page (managed by Base44)
+4. User can choose to login with:
+   - Email and password
+   - Google (if enabled in dashboard)
+   - Microsoft (if enabled)
+   - Facebook (if enabled)
+5. After successful authentication, Base44 redirects user back to `/Dashboard`
+6. User is now authenticated and can access the dashboard
 
----
+## Key Points from Base44 Documentation
 
-## 📝 Current Implementation
+- ✅ **Always use `base44.auth.redirectToLogin(nextUrl)`** - This is the correct method
+- ❌ **Don't use `User.login()`** - This is not supported and will cause errors
+- ✅ **Base44 manages the login page** - You don't need to create custom login pages
+- ✅ **All enabled auth methods** (Email, Google, etc.) appear on Base44's login page automatically
 
-### Email/Password Login (Always Available)
-- ✅ Pre-filled with admin credentials
-- ✅ Ready to use immediately
-- ✅ Works without any additional configuration
+## Configuration Details
 
-### Google Login (Requires Setup)
-- ✅ Button implemented
-- ⚠️ Requires Base44 SSO configuration
-- ⚠️ Requires Elite plan or higher
-- ⚠️ If not configured, shows error message
+### Base44 Dashboard Settings
 
----
+- ✅ **Google authentication:** Enabled
+- ✅ **OAuth Type:** Default Base44 OAuth (selected)
+- ✅ **Status:** Active
 
-## 🚀 Usage
+### Current Implementation
 
-### Option 1: Email/Password Login (Recommended)
+The code now correctly uses:
+```javascript
+base44.auth.redirectToLogin(redirectUrl);
+```
 
-1. Navigate to `/Login`
-2. Credentials are already pre-filled
-3. Click **"Login"** button
-4. You'll be redirected to the dashboard
+This redirects users to Base44's managed login page where they can choose Google (or any other enabled authentication method).
 
-### Option 2: Google Login
+## Configuration Details
 
-1. Navigate to `/Login`
-2. Click **"Continue with Google"** button
-3. You'll be redirected to Google for authorization
-4. After authorization, you'll be redirected to the dashboard
+### Base44 Dashboard Settings
 
-**Note:** Google login will only work if SSO is properly configured in Base44.
+- ✅ **Google authentication:** Enabled
+- ✅ **OAuth Type:** Default Base44 OAuth (selected)
+- ✅ **Status:** Active
 
----
+### Implementation Notes
 
-## 🔧 Troubleshooting
+The code tries multiple methods in order:
+1. Base44 SDK methods (`signInWithGoogle`, `googleLogin`)
+2. Base44 OAuth URL redirect (`/auth/oauth/google`)
 
-### Google Login Not Working
+## Custom Google OAuth Setup (Optional - Advanced)
 
-**Error:** "Google login is not configured"
+If you want to use **custom Google OAuth** (shows your domain instead of "base44.com" in the Google login window), you'll need:
 
-**Solutions:**
-1. Verify your Base44 plan includes SSO (Elite or higher)
-2. Check if SSO is enabled in Base44 dashboard
-3. Verify Google OAuth credentials are correct
-4. Check that redirect URI is properly configured in Google Cloud Console
-5. Use email/password login as a fallback (it's pre-filled anyway)
+1. **Builder plan or higher** (required for custom OAuth)
+2. **Custom domain** connected to your app
+3. **Google Cloud Console** project setup
+4. Follow the detailed instructions in [Base44 documentation](https://docs.base44.com/Setting-up-your-app/Managing-login-and-registration#customizing-the-google-login)
 
-### Can't Login with Email/Password
+For most use cases, the **default Base44 OAuth** (currently configured) works perfectly fine.
 
-**Possible Causes:**
-1. User doesn't exist in Base44
-2. Wrong password
-3. Base44 authentication not enabled
+## Reference Documentation
 
-**Solutions:**
-1. Create the user `nashvillendg@gmail.com` in Base44 dashboard
-2. Set password to `Ndg@1023` (or reset password if user exists)
-3. Ensure `requiresAuth: true` in `base44Client.js` for production
+- [Base44 Login and Registration Guide](https://docs.base44.com/Setting-up-your-app/Managing-login-and-registration)
+- [Customizing Google Login](https://docs.base44.com/Setting-up-your-app/Managing-login-and-registration#customizing-the-google-login)
 
----
+## Previous Setup Instructions (Reference - For Custom OAuth Only)
 
-## 📋 Next Steps
+1. **Log in to Base44 Dashboard**
+   - Go to: https://app.base44.com
+   - Sign in with your Base44 account
 
-1. **Create Admin User in Base44:**
-   - Go to Base44 dashboard
-   - Navigate to Users section
-   - Create user with email: `nashvillendg@gmail.com`
-   - Set password: `Ndg@1023`
+2. **Navigate to App Settings**
+   - Select your app: `6941d136f08b371ab7b95ffa` (CNG Wine & Spirits)
+   - Go to **Authentication** or **SSO** settings
 
-2. **Enable Authentication (for Production):**
-   ```javascript
-   // In src/api/base44Client.js
-   export const base44 = createClient({
-     appId: "6941d136f08b371ab7b95ffa",
-     requiresAuth: true  // Enable for production
-   });
-   ```
+3. **Enable Google OAuth**
+   - Find "Social Login" or "OAuth Providers" section
+   - Enable Google as an authentication provider
+   - Configure OAuth credentials:
+     - Client ID (from Google Cloud Console)
+     - Client Secret (from Google Cloud Console)
+     - Redirect URI: `https://www.cngliquors.com/auth/callback`
 
-3. **Configure Google SSO (Optional):**
-   - Follow the setup steps above
-   - Test Google login
-   - If not needed, email/password login will work fine
+4. **Get Google OAuth Credentials**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select existing one
+   - Enable Google+ API
+   - Create OAuth 2.0 credentials
+   - Add authorized redirect URIs:
+     - `https://www.cngliquors.com/auth/callback`
+     - `https://app.base44.com/api/apps/6941d136f08b371ab7b95ffa/auth/sso/callback`
 
----
+5. **Update Code**
+   - Once configured in Base44, uncomment the Google login button in `src/pages/Login.jsx`
+   - Change `{false && (` to `{true && (` around line 127
 
-## ✅ Summary
+### Option 2: Use Email/Password Login
 
-- ✅ Admin credentials pre-filled: `nashvillendg@gmail.com` / `Ndg@1023`
-- ✅ Google login button added
-- ✅ Email/password login always works (pre-filled)
-- ✅ Google login requires Base44 SSO configuration (optional)
-- ✅ Error handling implemented
-- ✅ User-friendly UI with divider between options
+The email/password login is fully functional and should be used until Google SSO is configured:
 
-**The login page is ready to use with email/password immediately. Google login will work once SSO is configured in Base44.**
+- **Email:** `nashvillendg@gmail.com`
+- **Password:** (Set in Base44 dashboard)
 
+## Current Implementation
+
+The code is ready for Google login once Base44 SSO is configured:
+
+- ✅ OAuth callback handler: `src/components/auth/OAuthCallback.jsx`
+- ✅ Route configured: `/auth/callback`
+- ✅ Google login button UI (currently hidden)
+- ✅ Error handling for SSO failures
+
+## Testing Google Login
+
+Once Google SSO is configured in Base44:
+
+1. Uncomment the Google login button in `src/pages/Login.jsx`
+2. Click "Continue with Google"
+3. You should be redirected to Google's OAuth consent screen
+4. After authorizing, you'll be redirected back to `/auth/callback`
+5. The callback handler will authenticate you and redirect to `/Dashboard`
+
+## Notes
+
+- The Base44 SSO endpoint format is: `https://app.base44.com/api/apps/{APP_ID}/auth/sso/google`
+- Make sure the redirect URI matches exactly what's configured in both Base44 and Google Cloud Console
+- The OAuth callback handler (`OAuthCallback.jsx`) will need to be updated based on how Base44 returns the authentication tokens

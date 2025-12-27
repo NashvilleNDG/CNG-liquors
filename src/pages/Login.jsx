@@ -94,42 +94,38 @@ export default function Login() {
     try {
       console.log('Initiating Google login...');
       
-      // Check if Base44 has Google OAuth method
-      if (base44.auth && typeof base44.auth.signInWithGoogle === 'function') {
-        // Try using Base44 SDK method if available
+      // According to Base44 documentation:
+      // https://docs.base44.com/Setting-up-your-app/Managing-login-and-registration#customizing-the-google-login
+      // "To log users in, always use base44.auth.redirectToLogin(nextUrl)"
+      // This method sends the user to the login page and brings them back after they sign in.
+      
+      if (base44.auth && typeof base44.auth.redirectToLogin === 'function') {
         try {
-          const result = await base44.auth.signInWithGoogle({
-            redirectUri: `${window.location.origin}/Dashboard`
-          });
-          console.log('Google login result:', result);
-          // If successful, handle the result
-          if (result && result.user) {
-            localStorage.setItem('user', JSON.stringify(result.user));
-            localStorage.setItem('isAuthenticated', 'true');
-            toast.success('Login successful!');
-            setTimeout(() => {
-              navigate('/Dashboard');
-            }, 100);
-            return;
-          }
+          // Redirect to Base44 login page - user can choose Google login there
+          // After login, they'll be redirected back to the specified URL
+          const redirectUrl = `${window.location.origin}/Dashboard`;
+          console.log('Redirecting to Base44 login page, will return to:', redirectUrl);
+          
+          base44.auth.redirectToLogin(redirectUrl);
+          // Note: redirectToLogin will cause a page navigation, so setIsGoogleLoading(false) won't be reached
+          return;
         } catch (sdkError) {
-          console.warn('Base44 SDK Google login method failed, trying direct URL redirect:', sdkError);
+          console.error('Base44 redirectToLogin failed:', sdkError);
+          toast.error('Failed to redirect to login page. Please try email/password login.');
+          setIsGoogleLoading(false);
+          return;
         }
+      } else {
+        // Fallback if redirectToLogin is not available
+        console.error('base44.auth.redirectToLogin is not available');
+        console.error('Available auth methods:', Object.keys(base44.auth || {}));
+        toast.error('Login redirect method not available. Please use email/password login.');
+        setIsGoogleLoading(false);
       }
       
-      // Fallback: Direct URL redirect to Base44 SSO
-      // Base44 SSO redirect URI format: https://app.base44.com/api/apps/{APP_ID}/auth/sso/callback
-      const appId = "6941d136f08b371ab7b95ffa";
-      const redirectUri = `${window.location.origin}/auth/callback`;
-      const ssoUrl = `https://app.base44.com/api/apps/${appId}/auth/sso/google?redirect_uri=${encodeURIComponent(redirectUri)}`;
-      
-      console.log('Redirecting to Base44 SSO:', ssoUrl);
-      
-      // Redirect to Base44 SSO (if configured)
-      window.location.href = ssoUrl;
     } catch (error) {
       console.error('Google login error:', error);
-      toast.error(error.message || 'Google login failed. Please try email/password login.');
+      toast.error('Google login failed. Please try again or use email/password login.');
       setIsGoogleLoading(false);
     }
   };
@@ -248,7 +244,7 @@ export default function Login() {
         <div className="mt-6 text-center text-sm text-gray-500">
           <p>Access restricted to authorized personnel only</p>
           <p className="mt-2 text-xs">
-            Forgot password? Use Google login or contact administrator.
+            Use Google login or email/password to access the dashboard.
           </p>
         </div>
       </motion.div>
