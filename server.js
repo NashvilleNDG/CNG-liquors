@@ -557,21 +557,39 @@ app.get('*', (req, res) => {
     // For regular users, serve the React app index.html
     // This handles all routes (/, /Home, /About, etc.) - React Router will handle routing
     try {
-      const indexPath = isProduction
-        ? resolve(__dirname, 'dist/index.html')
-        : resolve(__dirname, 'index.html');
+      // ALWAYS use dist/index.html in production, never the root index.html
+      const indexPath = resolve(__dirname, 'dist/index.html');
       
-      console.log(`Serving index.html from: ${indexPath}`);
-      console.log(`File exists: ${fs.existsSync(indexPath)}`);
+      console.log(`[${new Date().toISOString()}] Request: ${req.path}`);
+      console.log(`[${new Date().toISOString()}] isProduction: ${isProduction}`);
+      console.log(`[${new Date().toISOString()}] NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
+      console.log(`[${new Date().toISOString()}] Serving index.html from: ${indexPath}`);
+      console.log(`[${new Date().toISOString()}] File exists: ${fs.existsSync(indexPath)}`);
+      
+      if (!fs.existsSync(indexPath)) {
+        console.error(`[${new Date().toISOString()}] ERROR: dist/index.html does not exist!`);
+        return res.status(500).send('Build files not found. Please rebuild the application.');
+      }
       
       const template = fs.readFileSync(indexPath, 'utf-8');
+      
+      // Verify it's the correct file (should contain /assets/, not /src/)
+      if (template.includes('/src/main.jsx')) {
+        console.error(`[${new Date().toISOString()}] ERROR: Wrong index.html served! Contains /src/main.jsx`);
+        console.error(`[${new Date().toISOString()}] This should be dist/index.html but it seems to be the source file.`);
+      }
+      
+      if (!template.includes('/assets/')) {
+        console.error(`[${new Date().toISOString()}] WARNING: Template does not contain /assets/ path`);
+      }
+      
       res.set('Content-Type', 'text/html; charset=utf-8');
       res.send(template);
     } catch (error) {
-      console.error('Error reading index.html:', error);
-      console.error('Error stack:', error.stack);
-      console.error('NODE_ENV:', process.env.NODE_ENV);
-      console.error('isProduction:', isProduction);
+      console.error(`[${new Date().toISOString()}] Error reading index.html:`, error);
+      console.error(`[${new Date().toISOString()}] Error stack:`, error.stack);
+      console.error(`[${new Date().toISOString()}] NODE_ENV:`, process.env.NODE_ENV);
+      console.error(`[${new Date().toISOString()}] isProduction:`, isProduction);
       res.status(500).send(`Error loading page: ${error.message}`);
     }
   }
