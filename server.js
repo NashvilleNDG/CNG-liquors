@@ -306,12 +306,15 @@ function generateFullHTML(url) {
   const page = url === '/' ? '/' : url;
   const pageData = PAGE_CONTENT[page] || PAGE_CONTENT['/'];
   
+  // Base URL for absolute links (use www.cngliquors.com for production)
+  const baseUrl = process.env.BASE_URL || 'https://www.cngliquors.com';
+  
   // Enhanced Structured Data with Reviews and Aggregate Rating
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "LiquorStore",
     "name": "CNG Wine & Spirits",
-    "url": `https://cngliquors.com${url}`,
+    "url": `${baseUrl}${url}`,
     "telephone": "(615) 895-8777",
     "email": "cngliquors@gmail.com",
     "description": "Murfreesboro's largest wine, beer and liquor store. Best liquor store in Murfreesboro, TN offering premium wines, spirits, and craft beers.",
@@ -467,7 +470,7 @@ function generateFullHTML(url) {
   <meta property="og:title" content="${pageData.title}" />
   <meta property="og:description" content="${pageData.description}" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://cngliquors.com${url}" />
+  <meta property="og:url" content="${baseUrl}${url}" />
   <meta property="og:image" content="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/6941d136f08b371ab7b95ffa/4463d18c5_CNGHeroImage.png" />
   
   <!-- Structured Data -->
@@ -481,13 +484,13 @@ function generateFullHTML(url) {
   <div id="root">
     <header style="background: #1A1A1A; color: white; padding: 1rem 0;">
       <nav style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-        <a href="/" style="color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold;">CNG Wine & Spirits</a>
+        <a href="${baseUrl}/" style="color: white; text-decoration: none; font-size: 1.5rem; font-weight: bold;">CNG Wine & Spirits</a>
         <nav style="display: flex; gap: 2rem;">
-          <a href="/Home" style="color: white; text-decoration: none;">Home</a>
-          <a href="/Selection" style="color: white; text-decoration: none;">Selection</a>
-          <a href="/Delivery" style="color: white; text-decoration: none;">Delivery</a>
-          <a href="/About" style="color: white; text-decoration: none;">About</a>
-          <a href="/Contact" style="color: white; text-decoration: none;">Contact</a>
+          <a href="${baseUrl}/Home" style="color: white; text-decoration: none;">Home</a>
+          <a href="${baseUrl}/Selection" style="color: white; text-decoration: none;">Selection</a>
+          <a href="${baseUrl}/Delivery" style="color: white; text-decoration: none;">Delivery</a>
+          <a href="${baseUrl}/About" style="color: white; text-decoration: none;">About</a>
+          <a href="${baseUrl}/Contact" style="color: white; text-decoration: none;">Contact</a>
         </nav>
       </nav>
     </header>

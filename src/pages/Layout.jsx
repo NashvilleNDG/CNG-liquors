@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
+import { createPageUrl, createAbsolutePageUrl, isSSRContext } from '@/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Phone, MapPin, Clock, Mail, Facebook, Instagram } from 'lucide-react';
 import { Toaster } from 'sonner';
@@ -19,6 +19,12 @@ const navLinks = [
 export default function Layout({ children, currentPageName }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSSR, setIsSSR] = useState(false);
+  
+  // Detect SSR/crawler context on mount
+  useEffect(() => {
+    setIsSSR(isSSRContext());
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -168,39 +174,85 @@ export default function Layout({ children, currentPageName }) {
         <nav className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between lg:justify-between">
             {/* Logo */}
-            <Link to={createPageUrl('Home')} className="flex items-center gap-3 lg:flex-initial flex-1 lg:justify-start justify-center">
-              <div className="bg-white rounded-full p-2.5 shadow-lg">
-                <img 
-                  src={LOGO_URL} 
-                  alt="CNG Wine & Spirits Logo" 
-                  className="h-10 w-auto"
-                  width="40"
-                  height="40"
-                  loading="eager"
-                  decoding="async"
-                />
-              </div>
-            </Link>
+            {isSSR ? (
+              <a href={createAbsolutePageUrl('Home')} className="flex items-center gap-3 lg:flex-initial flex-1 lg:justify-start justify-center">
+                <div className="bg-white rounded-full p-2.5 shadow-lg">
+                  <img 
+                    src={LOGO_URL} 
+                    alt="CNG Wine & Spirits Logo" 
+                    className="h-10 w-auto"
+                    width="40"
+                    height="40"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </div>
+              </a>
+            ) : (
+              <Link to={createPageUrl('Home')} className="flex items-center gap-3 lg:flex-initial flex-1 lg:justify-start justify-center">
+                <div className="bg-white rounded-full p-2.5 shadow-lg">
+                  <img 
+                    src={LOGO_URL} 
+                    alt="CNG Wine & Spirits Logo" 
+                    className="h-10 w-auto"
+                    width="40"
+                    height="40"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </div>
+              </Link>
+            )}
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.page}
-                  to={createPageUrl(link.page)}
-                  className={`font-medium transition-colors hover:text-[#C9A962] ${textColor} ${
-                    currentPageName === link.page ? 'text-[#C9A962]' : ''
-                  }`}
+              {navLinks.map((link) => {
+                const pageUrl = createPageUrl(link.page);
+                const absoluteUrl = createAbsolutePageUrl(link.page);
+                const isActive = currentPageName === link.page;
+                
+                // Use absolute URLs for SSR/crawlers, React Router Links for regular users
+                if (isSSR) {
+                  return (
+                    <a
+                      key={link.page}
+                      href={absoluteUrl}
+                      className={`font-medium transition-colors hover:text-[#C9A962] ${textColor} ${
+                        isActive ? 'text-[#C9A962]' : ''
+                      }`}
+                    >
+                      {link.name}
+                    </a>
+                  );
+                }
+                
+                return (
+                  <Link
+                    key={link.page}
+                    to={pageUrl}
+                    className={`font-medium transition-colors hover:text-[#C9A962] ${textColor} ${
+                      isActive ? 'text-[#C9A962]' : ''
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+              {isSSR ? (
+                <a
+                  href={createAbsolutePageUrl('Delivery')}
+                  className="px-6 py-3 bg-[#722F37] hover:bg-[#8B3A42] text-white rounded-lg font-medium transition-all shadow-lg shadow-[#722F37]/30"
                 >
-                  {link.name}
+                  Order Online
+                </a>
+              ) : (
+                <Link
+                  to={createPageUrl('Delivery')}
+                  className="px-6 py-3 bg-[#722F37] hover:bg-[#8B3A42] text-white rounded-lg font-medium transition-all shadow-lg shadow-[#722F37]/30"
+                >
+                  Order Online
                 </Link>
-              ))}
-              <Link
-                to={createPageUrl('Delivery')}
-                className="px-6 py-3 bg-[#722F37] hover:bg-[#8B3A42] text-white rounded-lg font-medium transition-all shadow-lg shadow-[#722F37]/30"
-              >
-                Order Online
-              </Link>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -224,23 +276,53 @@ export default function Layout({ children, currentPageName }) {
               className="lg:hidden bg-[#1A1A1A] border-t border-gray-700"
             >
               <div className="container mx-auto px-6 py-6 space-y-4">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.page}
-                    to={createPageUrl(link.page)}
-                    className={`block py-3 font-medium border-b border-gray-700 ${
-                      currentPageName === link.page ? 'text-[#C9A962]' : 'text-white'
-                    }`}
+                {navLinks.map((link) => {
+                  const pageUrl = createPageUrl(link.page);
+                  const absoluteUrl = createAbsolutePageUrl(link.page);
+                  const isActive = currentPageName === link.page;
+                  
+                  // Use absolute URLs for SSR/crawlers, React Router Links for regular users
+                  if (isSSR) {
+                    return (
+                      <a
+                        key={link.page}
+                        href={absoluteUrl}
+                        className={`block py-3 font-medium border-b border-gray-700 ${
+                          isActive ? 'text-[#C9A962]' : 'text-white'
+                        }`}
+                      >
+                        {link.name}
+                      </a>
+                    );
+                  }
+                  
+                  return (
+                    <Link
+                      key={link.page}
+                      to={pageUrl}
+                      className={`block py-3 font-medium border-b border-gray-700 ${
+                        isActive ? 'text-[#C9A962]' : 'text-white'
+                      }`}
+                    >
+                      {link.name}
+                    </Link>
+                  );
+                })}
+                {isSSR ? (
+                  <a
+                    href={createAbsolutePageUrl('Delivery')}
+                    className="block w-full text-center px-6 py-3 bg-[#722F37] text-white rounded-lg font-medium mb-2.5"
                   >
-                    {link.name}
+                    Order Online
+                  </a>
+                ) : (
+                  <Link
+                    to={createPageUrl('Delivery')}
+                    className="block w-full text-center px-6 py-3 bg-[#722F37] text-white rounded-lg font-medium mb-2.5"
+                  >
+                    Order Online
                   </Link>
-                ))}
-                <Link
-                  to={createPageUrl('Delivery')}
-                  className="block w-full text-center px-6 py-3 bg-[#722F37] text-white rounded-lg font-medium mb-2.5"
-                >
-                  Order Online
-                </Link>
+                )}
                 <a
                   href="tel:+16158958777"
                   className="block w-full text-center px-6 py-3 border-2 border-white text-white rounded-lg font-medium"
