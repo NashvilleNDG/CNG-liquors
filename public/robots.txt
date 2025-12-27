@@ -23,5 +23,5 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 
-Sitemap: https://cngliquors.com/sitemap.xml
+Sitemap: https://www.cngliquors.com/sitemap.xml
 
