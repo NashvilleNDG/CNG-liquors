@@ -596,12 +596,37 @@ app.get('*', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-  console.log(`Serving static files from: ${isProduction ? resolve(__dirname, 'dist') : resolve(__dirname, 'public')}`);
+  console.log(`========================================`);
+  console.log(`Server starting...`);
+  console.log(`Port: ${port}`);
+  console.log(`NODE_ENV: ${process.env.NODE_ENV || 'not set'}`);
+  console.log(`isProduction: ${isProduction}`);
+  console.log(`__dirname: ${__dirname}`);
+  console.log(`========================================`);
+  
   if (isProduction) {
     const distIndexPath = resolve(__dirname, 'dist/index.html');
-    console.log(`Looking for index.html at: ${distIndexPath}`);
-    console.log(`Index.html exists: ${fs.existsSync(distIndexPath)}`);
+    const rootIndexPath = resolve(__dirname, 'index.html');
+    console.log(`Production mode - checking files:`);
+    console.log(`  dist/index.html: ${distIndexPath}`);
+    console.log(`  dist/index.html exists: ${fs.existsSync(distIndexPath)}`);
+    console.log(`  root/index.html: ${rootIndexPath}`);
+    console.log(`  root/index.html exists: ${fs.existsSync(rootIndexPath)}`);
+    
+    if (fs.existsSync(distIndexPath)) {
+      const content = fs.readFileSync(distIndexPath, 'utf-8');
+      if (content.includes('/assets/')) {
+        console.log(`  ✓ dist/index.html contains /assets/ (correct)`);
+      } else {
+        console.log(`  ✗ dist/index.html does NOT contain /assets/ (wrong file!)`);
+      }
+      if (content.includes('/src/main.jsx')) {
+        console.log(`  ✗ dist/index.html contains /src/main.jsx (wrong file!)`);
+      }
+    }
   }
+  console.log(`========================================`);
+  console.log(`Server running at http://localhost:${port}`);
+  console.log(`========================================`);
 });
 
