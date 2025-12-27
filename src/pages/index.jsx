@@ -10,6 +10,13 @@ import Home from "./Home";
 
 import Selection from "./Selection";
 
+import Login from "./Login";
+
+import Dashboard from "./Dashboard";
+
+import ProtectedRoute from "../components/auth/ProtectedRoute";
+import OAuthCallback from "../components/auth/OAuthCallback";
+
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 
 const PAGES = {
@@ -49,24 +56,70 @@ function PagesContent() {
     const currentPage = _getCurrentPage(location.pathname);
     
     return (
-        <Layout currentPageName={currentPage}>
-            <Routes>            
-                
-                    <Route path="/" element={<Home />} />
-                
-                
-                <Route path="/About" element={<About />} />
-                
-                <Route path="/Contact" element={<Contact />} />
-                
-                <Route path="/Delivery" element={<Delivery />} />
-                
-                <Route path="/Home" element={<Home />} />
-                
-                <Route path="/Selection" element={<Selection />} />
-                
-            </Routes>
-        </Layout>
+        <Routes>
+                    {/* Auth routes without Layout */}
+                    <Route path="/Login" element={<Login />} />
+                    {/* OAuth callback route for Base44 SSO */}
+                    <Route path="/auth/callback" element={<OAuthCallback />} />
+                    <Route 
+                        path="/Dashboard" 
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
+                            </ProtectedRoute>
+                        } 
+                    />
+            
+            {/* Public routes with Layout */}
+            <Route 
+                path="/" 
+                element={
+                    <Layout currentPageName={currentPage}>
+                        <Home />
+                    </Layout>
+                } 
+            />
+            <Route 
+                path="/Home" 
+                element={
+                    <Layout currentPageName={currentPage}>
+                        <Home />
+                    </Layout>
+                } 
+            />
+            <Route 
+                path="/About" 
+                element={
+                    <Layout currentPageName={currentPage}>
+                        <About />
+                    </Layout>
+                } 
+            />
+            <Route 
+                path="/Contact" 
+                element={
+                    <Layout currentPageName={currentPage}>
+                        <Contact />
+                    </Layout>
+                } 
+            />
+            <Route 
+                path="/Delivery" 
+                element={
+                    <Layout currentPageName={currentPage}>
+                        <Delivery />
+                    </Layout>
+                } 
+            />
+            <Route 
+                path="/Selection" 
+                element={
+                    <Layout currentPageName={currentPage}>
+                        <Selection />
+                    </Layout>
+                } 
+            />
+        </Routes>
     );
 }
 

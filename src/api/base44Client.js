@@ -6,3 +6,6 @@ export const base44 = createClient({
   appId: "6941d136f08b371ab7b95ffa", 
   requiresAuth: false // Temporarily disabled for local development
 });
+
+// Export requiresAuth flag for checking in components
+export const REQUIRES_AUTH = false; // Set to true for production
