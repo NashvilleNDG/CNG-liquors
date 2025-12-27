@@ -9,7 +9,7 @@
     "postbuild": "echo 'Build complete - server.js handles SSR for crawlers'",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node server.js"
+    "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {
     "@base44/sdk": "^0.1.2",

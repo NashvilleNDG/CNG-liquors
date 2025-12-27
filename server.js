@@ -6,13 +6,15 @@ import fs from 'fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const isProduction = process.env.NODE_ENV === 'production';
+// Force production mode if NODE_ENV is not set (for Render.com)
+const isProduction = process.env.NODE_ENV === 'production' || !process.env.NODE_ENV || process.env.NODE_ENV === '';
 const port = process.env.PORT || 3000;
 
 // Log environment info
 console.log('Environment:', isProduction ? 'PRODUCTION' : 'DEVELOPMENT');
 console.log('Port:', port);
-console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('NODE_ENV:', process.env.NODE_ENV || 'not set (defaulting to production)');
+console.log('__dirname:', __dirname);
 
 // Comprehensive content data for all pages
 function getHomePageContent() {
