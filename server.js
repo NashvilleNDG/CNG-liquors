@@ -554,14 +554,21 @@ app.get('*', (req, res) => {
     // For regular users, serve the React app index.html
     // This handles all routes (/, /Home, /About, etc.) - React Router will handle routing
     try {
-      const template = isProduction
-        ? fs.readFileSync(resolve(__dirname, 'dist/index.html'), 'utf-8')
-        : fs.readFileSync(resolve(__dirname, 'index.html'), 'utf-8');
-      res.set('Content-Type', 'text/html');
+      const indexPath = isProduction
+        ? resolve(__dirname, 'dist/index.html')
+        : resolve(__dirname, 'index.html');
+      
+      console.log(`Serving index.html from: ${indexPath}`);
+      console.log(`File exists: ${fs.existsSync(indexPath)}`);
+      
+      const template = fs.readFileSync(indexPath, 'utf-8');
+      res.set('Content-Type', 'text/html; charset=utf-8');
       res.send(template);
     } catch (error) {
       console.error('Error reading index.html:', error);
       console.error('Error stack:', error.stack);
+      console.error('NODE_ENV:', process.env.NODE_ENV);
+      console.error('isProduction:', isProduction);
       res.status(500).send(`Error loading page: ${error.message}`);
     }
   }
