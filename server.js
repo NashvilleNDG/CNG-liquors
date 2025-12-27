@@ -542,7 +542,8 @@ if (isProduction) {
 
 // Catch-all route for HTML pages
 // This must come AFTER static middleware so static files are served first
-app.get('*', (req, res) => {
+// Use '/*' instead of '*' for Express 5 compatibility
+app.get('/*', (req, res) => {
   const userAgent = req.get('user-agent') || '';
   const isCrawler = /bot|crawler|spider|GPTBot|ChatGPT|Claude|Google-Extended|anthropic|BingBot|Slurp|DuckDuckBot|Baiduspider|Yandex|Sogou|Exabot|Facebot|ia_archiver|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora|pinterest|slackbot/i.test(userAgent);
   
