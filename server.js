@@ -7,7 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Force production mode if NODE_ENV is not set (for Render.com)
-const isProduction = process.env.NODE_ENV === 'production' || !process.env.NODE_ENV || process.env.NODE_ENV === '';
+// Default to production unless explicitly set to 'development'
+const isProduction = process.env.NODE_ENV !== 'development';
 const port = process.env.PORT || 3000;
 
 // Log environment info
