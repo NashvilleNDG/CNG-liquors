@@ -9,6 +9,11 @@ const __dirname = dirname(__filename);
 const isProduction = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || 3000;
 
+// Log environment info
+console.log('Environment:', isProduction ? 'PRODUCTION' : 'DEVELOPMENT');
+console.log('Port:', port);
+console.log('NODE_ENV:', process.env.NODE_ENV);
+
 // Comprehensive content data for all pages
 function getHomePageContent() {
   return `
@@ -565,5 +570,11 @@ app.get('*', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
+  console.log(`Serving static files from: ${isProduction ? resolve(__dirname, 'dist') : resolve(__dirname, 'public')}`);
+  if (isProduction) {
+    const distIndexPath = resolve(__dirname, 'dist/index.html');
+    console.log(`Looking for index.html at: ${distIndexPath}`);
+    console.log(`Index.html exists: ${fs.existsSync(distIndexPath)}`);
+  }
 });
 
