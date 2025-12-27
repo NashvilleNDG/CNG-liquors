@@ -90,6 +90,7 @@ export default function Layout({ children, currentPageName }) {
 
       // Hotjar/ContentSquare
       const hotjarScript = document.createElement('script');
+      hotjarScript.async = true;
       hotjarScript.src = 'https://t.contentsquare.net/uxa/44bbf16319113.js';
       document.head.appendChild(hotjarScript);
     };
