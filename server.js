@@ -530,23 +530,9 @@ if (isProduction) {
   app.use(express.static(resolve(__dirname, 'public')));
 }
 
-// Catch-all route for HTML pages (only for non-asset requests and non-root)
-app.get('*', (req, res, next) => {
-  // Skip if this is a static asset request (should be handled by static middleware above)
-  if (req.path.startsWith('/assets/') || 
-      req.path.endsWith('.js') || 
-      req.path.endsWith('.css') || 
-      req.path.endsWith('.png') || 
-      req.path.endsWith('.jpg') || 
-      req.path.endsWith('.svg') ||
-      req.path.endsWith('.ico') ||
-      req.path.endsWith('.woff') ||
-      req.path.endsWith('.woff2') ||
-      req.path === '/robots.txt' ||
-      req.path === '/sitemap.xml') {
-    return next(); // Let static middleware handle it
-  }
-
+// Catch-all route for HTML pages
+// This must come AFTER static middleware so static files are served first
+app.get('*', (req, res) => {
   const userAgent = req.get('user-agent') || '';
   const isCrawler = /bot|crawler|spider|GPTBot|ChatGPT|Claude|Google-Extended|anthropic|BingBot|Slurp|DuckDuckBot|Baiduspider|Yandex|Sogou|Exabot|Facebot|ia_archiver|facebookexternalhit|twitterbot|rogerbot|linkedinbot|embedly|quora|pinterest|slackbot/i.test(userAgent);
   
@@ -568,7 +554,8 @@ app.get('*', (req, res, next) => {
       res.send(template);
     } catch (error) {
       console.error('Error reading index.html:', error);
-      res.status(500).send('Error loading page');
+      console.error('Error stack:', error.stack);
+      res.status(500).send(`Error loading page: ${error.message}`);
     }
   }
 });
