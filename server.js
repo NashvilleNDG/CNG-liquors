@@ -309,6 +309,9 @@ function generateFullHTML(url) {
   // Base URL for absolute links (use www.cngliquors.com for production)
   const baseUrl = process.env.BASE_URL || 'https://www.cngliquors.com';
   
+  // Log baseUrl for debugging
+  console.log(`[${new Date().toISOString()}] generateFullHTML: baseUrl = ${baseUrl}, url = ${url}`);
+  
   // Enhanced Structured Data with Reviews and Aggregate Rating
   const structuredData = {
     "@context": "https://schema.org",
@@ -574,7 +577,16 @@ app.use((req, res, next) => {
   const isNoJSRequest = !userAgent.includes('Mozilla') || req.query.format === 'html';
   
   if (isCrawler || isNoJSRequest) {
+    console.log(`[${new Date().toISOString()}] Serving static HTML to ${isCrawler ? 'crawler' : 'no-JS client'}: ${userAgent.substring(0, 50)}`);
     const html = generateFullHTML(req.originalUrl);
+    
+    // Verify absolute URLs are present
+    if (!html.includes('https://www.cngliquors.com/Home')) {
+      console.error(`[${new Date().toISOString()}] WARNING: Generated HTML does not contain absolute URLs!`);
+    } else {
+      console.log(`[${new Date().toISOString()}] ✓ Generated HTML contains absolute URLs`);
+    }
+    
     res.set('Content-Type', 'text/html');
     res.send(html);
   } else {
