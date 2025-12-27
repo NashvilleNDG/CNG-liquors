@@ -517,9 +517,11 @@ const app = express();
 // Serve static files from dist in production (MUST be before catch-all route)
 if (isProduction) {
   // Serve static assets (JS, CSS, images) from dist
+  // This will automatically serve index.html for root route
   app.use(express.static(resolve(__dirname, 'dist'), {
     maxAge: '1y',
-    etag: true
+    etag: true,
+    index: 'index.html'
   }));
   // Serve robots.txt and sitemap.xml from public
   app.use(express.static(resolve(__dirname, 'public')));
@@ -528,8 +530,8 @@ if (isProduction) {
   app.use(express.static(resolve(__dirname, 'public')));
 }
 
-// Catch-all route for HTML pages (only for non-asset requests)
-app.get('*', (req, res) => {
+// Catch-all route for HTML pages (only for non-asset requests and non-root)
+app.get('*', (req, res, next) => {
   // Skip if this is a static asset request (should be handled by static middleware above)
   if (req.path.startsWith('/assets/') || 
       req.path.endsWith('.js') || 
@@ -539,8 +541,10 @@ app.get('*', (req, res) => {
       req.path.endsWith('.svg') ||
       req.path.endsWith('.ico') ||
       req.path.endsWith('.woff') ||
-      req.path.endsWith('.woff2')) {
-    return res.status(404).send('Not found');
+      req.path.endsWith('.woff2') ||
+      req.path === '/robots.txt' ||
+      req.path === '/sitemap.xml') {
+    return next(); // Let static middleware handle it
   }
 
   const userAgent = req.get('user-agent') || '';
@@ -554,7 +558,8 @@ app.get('*', (req, res) => {
     res.set('Content-Type', 'text/html');
     res.send(html);
   } else {
-    // Serve React app for regular users
+    // For regular users, serve the React app index.html
+    // This handles all routes (/, /Home, /About, etc.) - React Router will handle routing
     try {
       const template = isProduction
         ? fs.readFileSync(resolve(__dirname, 'dist/index.html'), 'utf-8')
