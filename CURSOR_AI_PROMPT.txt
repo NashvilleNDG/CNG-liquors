@@ -1,0 +1,30 @@
+I have a Base44 website that's a React SPA. AI crawlers (Claude, ChatGPT, Gemini) can't access any content because it only loads via JavaScript. They only see an empty <div id="root"></div>.
+
+GOAL: Make the site fully crawlable by AI models so they can access ALL pages, links, buttons, and text.
+
+REQUIREMENTS:
+1. Create an Express.js server (server.js) that detects crawlers and serves pre-rendered static HTML
+2. Extract ALL content from each React page component and embed as static HTML strings in server.js
+3. ALL links must use absolute URLs: https://www.yourdomain.com/PageName (not relative /PageName)
+4. ALL external links (social media, maps, phone, email, delivery apps) must be in static HTML with full URLs
+5. ALL buttons that navigate must use <a href="..."> tags in static HTML
+6. Include ALL business info: name, address, phone, hours, products, services, FAQs, testimonials
+7. Add Schema.org structured data (LocalBusiness, Review, FAQPage) in JSON-LD format
+8. Add proper meta tags (title, description, Open Graph) for all pages
+9. Update sitemap.xml and robots.txt to allow AI crawlers
+
+IMPLEMENTATION:
+- Create server.js with functions for each page's static HTML content
+- Detect crawlers via User-Agent header (GPTBot, ChatGPT, Claude, etc.)
+- For crawlers: serve static HTML with all content and absolute URLs
+- For regular users: serve the React app (keep existing functionality)
+- Extract content from: Home, About, Contact, Products/Services, and all other pages
+- Include all navigation links, external links, and buttons in static HTML
+
+VERIFICATION:
+- View page source should show full HTML content, not just <div id="root"></div>
+- All links in HTML source should be absolute URLs
+- curl -A "GPTBot" https://yourdomain.com/ should return full HTML
+
+Start by analyzing all pages and routes, then create server.js with static HTML for each page.
+

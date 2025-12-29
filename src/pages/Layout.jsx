@@ -458,7 +458,7 @@ export default function Layout({ children, currentPageName }) {
           {/* Bottom Bar */}
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-center">
             <div className="text-white text-sm">
-              © {new Date().getFullYear()} CNG Wine & Spirits. All rights reserved. Designed & Developed By <a href="https://nashvilledigitalgroup.com/" target="_blank" rel="noopener noreferrer" className="text-[#C9A962] hover:underline">Nashville Digital Group</a>
+              © 2026 CNG Wine & Spirits. All rights reserved. Designed & Developed By <a href="https://nashvilledigitalgroup.com/" target="_blank" rel="noopener noreferrer" className="text-[#C9A962] hover:underline">Nashville Digital Group</a>
             </div>
             <p className="text-white text-sm">
               Must be 21 or older to purchase. Please drink responsibly.

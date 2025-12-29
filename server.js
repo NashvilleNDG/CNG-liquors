@@ -19,6 +19,10 @@ console.log('__dirname:', __dirname);
 
 // Comprehensive content data for all pages
 function getHomePageContent() {
+  // External delivery partner links - these must be in static HTML for AI crawlers
+  const doordashLink = "https://www.doordash.com/en/convenience/store/cng-wine-%26-spirits-murfreesboro-2517144/?srsltid=AfmBOoox9ZN9lXNizvsnMre6B5M9URBWcrWl2oug4VZfDkiN8afxcBCJ";
+  const ubereatsLink = "https://www.ubereats.com/store/cng-wine-%26-spirits/wZSMW6AQVoip9eW1_Kujyw?srsltid=AfmBOoqoYeaaZ_WWv7lkNGAwlGbRBlfZZyPJZhDVzLmt9A2e8AW3xEBN";
+  
   return `
     <h1>Discover Exceptional Spirits</h1>
     <p>Your destination for premium wines, craft spirits, and artisan beers. Serving Murfreesboro, Tennessee with expertise and passion since day one.</p>
@@ -48,6 +52,19 @@ function getHomePageContent() {
     
     <h3>Champagne & Sparkling</h3>
     <p>Celebrate life's moments with our bubbly selection</p>
+    
+    <h2>Choose Your Delivery Partner</h2>
+    <p>Order from CNG Wine & Spirits through your preferred delivery app and enjoy fast, reliable service to your doorstep.</p>
+    
+    <h3>Order on DoorDash</h3>
+    <p>Fast delivery from your favorite liquor store in Murfreesboro. Track your order in real-time. 30-60 minute delivery. DashPass benefits available.</p>
+    <p><a href="${doordashLink}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 12px 24px; background-color: #FF3008; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px;">Order on DoorDash</a></p>
+    <p><a href="${doordashLink}" target="_blank" rel="noopener noreferrer" style="color: #FF3008; text-decoration: underline;">Open DoorDash App</a></p>
+    
+    <h3>Order on Uber Eats</h3>
+    <p>Reliable alcohol delivery service to Murfreesboro homes. Live order tracking. Quick 30-60 minute delivery. Uber One member perks.</p>
+    <p><a href="${ubereatsLink}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 12px 24px; background-color: #06C167; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px;">Order on Uber Eats</a></p>
+    <p><a href="${ubereatsLink}" target="_blank" rel="noopener noreferrer" style="color: #06C167; text-decoration: underline;">Open Uber Eats App</a></p>
     
     <h2>Customer Testimonials</h2>
     <div itemscope itemtype="https://schema.org/Review">
@@ -127,12 +144,14 @@ function getHomePageContent() {
 }
 
 function getAboutPageContent() {
+  const baseUrl = process.env.BASE_URL || 'https://www.cngliquors.com';
+  
   return `
     <h1>About CNG Wine & Spirits</h1>
     <h2>Murfreesboro's Trusted Liquor Destination</h2>
-    <p>Located in the heart of Murfreesboro, Tennessee, CNG Wine & Spirits has been proudly serving our community with an exceptional selection of wines, spirits, and craft beers.</p>
+    <p>Located in the heart of Murfreesboro, Tennessee, CNG Wine & Spirits has been proudly serving our community with an exceptional selection of <a href="${baseUrl}/Selection" style="color: #722F37; text-decoration: underline;">wines, spirits, and craft beers</a>.</p>
     <p>Our mission is simple: provide our customers with quality products, competitive prices, and the kind of personalized service that turns first-time visitors into lifelong friends.</p>
-    <p>Whether you're a seasoned connoisseur looking for a rare vintage or someone exploring new flavors, our knowledgeable team is here to guide you to the perfect selection.</p>
+    <p>Whether you're a seasoned connoisseur looking for a rare vintage or someone exploring new flavors, our knowledgeable team is here to guide you to the perfect selection. <a href="${baseUrl}/Contact" style="color: #722F37; text-decoration: underline;">Visit our Murfreesboro store</a> today.</p>
     
     <h2>Our Values</h2>
     <h3>Quality Selection</h3>
@@ -158,16 +177,23 @@ function getAboutPageContent() {
       <li>Open 7 days a week</li>
       <li>Special orders available</li>
     </ul>
+    
+    <h2>Visit Us Today</h2>
+    <p>Stop by our store at 2750 S Rutherford Blvd. We look forward to helping you discover your next favorite bottle!</p>
+    <p><a href="${baseUrl}/Contact" style="display: inline-block; padding: 12px 24px; background-color: #722F37; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px;">Get Directions</a></p>
   `;
 }
 
 function getContactPageContent() {
+  const googleMapsLink = "https://maps.google.com/?q=2750+S+Rutherford+Blvd,+Murfreesboro,+TN+37130";
+  
   return `
     <h1>Contact Us</h1>
     <h2>Visit Our Store</h2>
     <p><strong>Address:</strong> 2750 S Rutherford Blvd, Murfreesboro, TN 37130</p>
-    <p><strong>Phone:</strong> <a href="tel:+16158958777">(615) 895-8777</a></p>
-    <p><strong>Email:</strong> <a href="mailto:cngliquors@gmail.com">cngliquors@gmail.com</a></p>
+    <p><strong>Get Directions:</strong> <a href="${googleMapsLink}" target="_blank" rel="noopener noreferrer" style="color: #722F37; text-decoration: underline;">Open in Google Maps</a></p>
+    <p><strong>Phone:</strong> <a href="tel:+16158958777" style="color: #722F37; text-decoration: underline;">(615) 895-8777</a></p>
+    <p><strong>Email:</strong> <a href="mailto:cngliquors@gmail.com" style="color: #722F37; text-decoration: underline;">cngliquors@gmail.com</a></p>
     
     <h2>Store Hours</h2>
     <ul>
@@ -197,16 +223,25 @@ function getContactPageContent() {
 }
 
 function getDeliveryPageContent() {
+  // External delivery partner links - these must be in static HTML for AI crawlers
+  const doordashLink = "https://www.doordash.com/en/convenience/store/cng-wine-%26-spirits-murfreesboro-2517144/?srsltid=AfmBOoox9ZN9lXNizvsnMre6B5M9URBWcrWl2oug4VZfDkiN8afxcBCJ";
+  const ubereatsLink = "https://www.ubereats.com/store/cng-wine-%26-spirits/wZSMW6AQVoip9eW1_Kujyw?srsltid=AfmBOoqoYeaaZ_WWv7lkNGAwlGbRBlfZZyPJZhDVzLmt9A2e8AW3xEBN";
+  
   return `
     <h1>Order Online for Delivery</h1>
     <p>Get your favorite wines, spirits, and beers delivered right to your door in Murfreesboro, TN. Order through DoorDash or Uber Eats today!</p>
     
     <h2>Choose Your Delivery Partner</h2>
-    <h3>DoorDash</h3>
-    <p>Fast delivery from your favorite liquor store in Murfreesboro. Track your order in real-time. 30-60 minute delivery. DashPass benefits available.</p>
     
-    <h3>Uber Eats</h3>
+    <h3>Order on DoorDash</h3>
+    <p>Fast delivery from your favorite liquor store in Murfreesboro. Track your order in real-time. 30-60 minute delivery. DashPass benefits available.</p>
+    <p><a href="${doordashLink}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 12px 24px; background-color: #FF3008; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px;">Order on DoorDash</a></p>
+    <p><a href="${doordashLink}" target="_blank" rel="noopener noreferrer" style="color: #FF3008; text-decoration: underline;">Open DoorDash App</a></p>
+    
+    <h3>Order on Uber Eats</h3>
     <p>Reliable alcohol delivery service to Murfreesboro homes. Live order tracking. Quick 30-60 minute delivery. Uber One member perks.</p>
+    <p><a href="${ubereatsLink}" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 12px 24px; background-color: #06C167; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px;">Order on Uber Eats</a></p>
+    <p><a href="${ubereatsLink}" target="_blank" rel="noopener noreferrer" style="color: #06C167; text-decoration: underline;">Open Uber Eats App</a></p>
     
     <h2>Why Order Alcohol Delivery?</h2>
     <ul>
@@ -234,15 +269,18 @@ function getDeliveryPageContent() {
 }
 
 function getSelectionPageContent() {
+  const baseUrl = process.env.BASE_URL || 'https://www.cngliquors.com';
+  
   return `
     <h1>Explore Our Selection</h1>
+    <p>Discover premium beverages carefully selected to satisfy every palate and occasion at CNG Wine & Spirits in Murfreesboro, TN.</p>
     
-    <h2>Wines</h2>
+    <h2>Fine Wines</h2>
     <p>From bold reds to crisp whites, our wine selection spans the globe.</p>
     <p><strong>Categories:</strong> Red Wines, White Wines, Rosé, Sparkling, Dessert Wines</p>
     <p><strong>What We Carry:</strong> Napa Valley Cabernets, French Burgundy & Bordeaux, Italian Chianti & Barolo, Spanish Rioja, Australian Shiraz, New Zealand Sauvignon Blanc, Oregon Pinot Noir, Argentinian Malbec</p>
     
-    <h2>Spirits</h2>
+    <h2>Premium Spirits</h2>
     <p>Premium spirits from world-renowned distilleries.</p>
     <p><strong>Categories:</strong> Whiskey & Bourbon, Vodka, Rum, Gin, Tequila & Mezcal, Cognac & Brandy</p>
     <p><strong>What We Carry:</strong> Tennessee Whiskey, Kentucky Bourbon, Scotch Single Malts, Irish Whiskey, Japanese Whisky, Premium Vodkas, Artisan Gins, Aged Tequilas</p>
@@ -266,6 +304,10 @@ function getSelectionPageContent() {
     <p>Unique finds and seasonal specialties.</p>
     <p><strong>Categories:</strong> Gift Sets, Rare Finds, Seasonal, Local Products</p>
     <p><strong>What We Carry:</strong> Gift Baskets, Limited Editions, Tennessee Products, Seasonal Selections</p>
+    
+    <h2>Can't Find What You're Looking For?</h2>
+    <p>Our inventory is always changing. <a href="${baseUrl}/Contact" style="color: #722F37; text-decoration: underline;">Visit our Murfreesboro liquor store</a> or give us a call – we're happy to help you find exactly what you need or place a special order.</p>
+    <p><a href="tel:+16158958777" style="display: inline-block; padding: 12px 24px; background-color: #722F37; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px; margin-right: 10px;">Call (615) 895-8777</a> <a href="mailto:cngliquors@gmail.com" style="display: inline-block; padding: 12px 24px; border: 2px solid #722F37; color: #722F37; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 10px;">Email Us</a></p>
   `;
 }
 
@@ -345,7 +387,7 @@ function generateFullHTML(url) {
         "@type": "OpeningHoursSpecification",
         "dayOfWeek": "Sunday",
         "opens": "10:00",
-        "closes": "19:00"
+        "closes": "22:00"
       }
     ],
     "priceRange": "$$",
@@ -452,7 +494,17 @@ function generateFullHTML(url) {
           "itemOffered": {
             "@type": "Service",
             "name": "Uber Eats delivery",
-            "description": "Alcohol delivery service via Uber Eats"
+            "description": "Alcohol delivery service via Uber Eats",
+            "url": "https://www.ubereats.com/store/cng-wine-%26-spirits/wZSMW6AQVoip9eW1_Kujyw?srsltid=AfmBOoqoYeaaZ_WWv7lkNGAwlGbRBlfZZyPJZhDVzLmt9A2e8AW3xEBN"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@type": "Service",
+            "name": "DoorDash delivery",
+            "description": "Alcohol delivery service via DoorDash",
+            "url": "https://www.doordash.com/en/convenience/store/cng-wine-%26-spirits-murfreesboro-2517144/?srsltid=AfmBOoox9ZN9lXNizvsnMre6B5M9URBWcrWl2oug4VZfDkiN8afxcBCJ"
           }
         }
       ]
@@ -502,19 +554,55 @@ function generateFullHTML(url) {
       
       <section style="background: white; padding: 2rem; border-radius: 0.5rem; margin-top: 2rem;">
         <h2>CNG Wine & Spirits - Best Liquor Store in Murfreesboro, TN</h2>
-        <p><strong>Address:</strong> 2750 S Rutherford Blvd, Murfreesboro, TN 37130</p>
-        <p><strong>Phone:</strong> <a href="tel:+16158958777">(615) 895-8777</a></p>
-        <p><strong>Hours:</strong> Monday-Saturday 8:00 AM - 11:00 PM, Sunday 10:00 AM - 7:00 PM</p>
-        <p><strong>Products:</strong> Wine, Spirits, Beer</p>
+        <p><strong>Address:</strong> <a href="https://maps.google.com/?q=2750+S+Rutherford+Blvd,+Murfreesboro,+TN+37130" target="_blank" rel="noopener noreferrer" style="color: #722F37; text-decoration: underline;">2750 S Rutherford Blvd, Murfreesboro, TN 37130</a></p>
+        <p><strong>Phone:</strong> <a href="tel:+16158958777" style="color: #722F37; text-decoration: underline;">(615) 895-8777</a></p>
+        <p><strong>Email:</strong> <a href="mailto:cngliquors@gmail.com" style="color: #722F37; text-decoration: underline;">cngliquors@gmail.com</a></p>
+        <p><strong>Hours:</strong> Monday-Saturday 8:00 AM - 11:00 PM, Sunday 10:00 AM - 10:00 PM</p>
+        <p><strong>Products:</strong> Wine, Spirits, Beer, Champagne, Mixers & Accessories, Specialty Items</p>
         <p><strong>Special Offers:</strong> 10% off wine by case, 5% off spirits by case</p>
-        <p><strong>Services:</strong> Wine tastings, curbside service, Uber Eats delivery</p>
+        <p><strong>Services:</strong> Wine tastings, curbside service, <a href="${baseUrl}/Delivery" style="color: #722F37; text-decoration: underline;">DoorDash delivery</a>, <a href="${baseUrl}/Delivery" style="color: #722F37; text-decoration: underline;">Uber Eats delivery</a></p>
         <p><strong>Description:</strong> Murfreesboro's largest wine, beer and liquor store. Best liquor store in Murfreesboro offering premium wines, spirits, and craft beers with exceptional customer service.</p>
+        <p><strong>Quick Links:</strong> <a href="${baseUrl}/Home" style="color: #722F37; text-decoration: underline;">Home</a> | <a href="${baseUrl}/Selection" style="color: #722F37; text-decoration: underline;">Our Selection</a> | <a href="${baseUrl}/Delivery" style="color: #722F37; text-decoration: underline;">Delivery</a> | <a href="${baseUrl}/About" style="color: #722F37; text-decoration: underline;">About Us</a> | <a href="${baseUrl}/Contact" style="color: #722F37; text-decoration: underline;">Contact</a></p>
       </section>
     </main>
-    <footer style="background: #1A1A1A; color: white; padding: 2rem 0; text-align: center;">
-      <p>© ${new Date().getFullYear()} CNG Wine & Spirits. All rights reserved.</p>
-      <p style="font-size: 0.875rem; margin-top: 0.5rem;">Must be 21 or older to purchase. Please drink responsibly.</p>
-    </footer>
+            <footer style="background: #1A1A1A; color: white; padding: 2rem 0;">
+              <div style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                  <div>
+                    <h3 style="color: #C9A962; margin-bottom: 1rem;">Quick Links</h3>
+                    <ul style="list-style: none; padding: 0;">
+                      <li style="margin-bottom: 0.5rem;"><a href="${baseUrl}/Home" style="color: white; text-decoration: none;">Home</a></li>
+                      <li style="margin-bottom: 0.5rem;"><a href="${baseUrl}/Selection" style="color: white; text-decoration: none;">Our Selection</a></li>
+                      <li style="margin-bottom: 0.5rem;"><a href="${baseUrl}/Delivery" style="color: white; text-decoration: none;">Delivery</a></li>
+                      <li style="margin-bottom: 0.5rem;"><a href="${baseUrl}/About" style="color: white; text-decoration: none;">About Us</a></li>
+                      <li style="margin-bottom: 0.5rem;"><a href="${baseUrl}/Contact" style="color: white; text-decoration: none;">Contact</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 style="color: #C9A962; margin-bottom: 1rem;">Contact Us</h3>
+                    <ul style="list-style: none; padding: 0;">
+                      <li style="margin-bottom: 0.5rem;"><a href="https://maps.google.com/?q=2750+S+Rutherford+Blvd,+Murfreesboro,+TN+37130" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none;">2750 S Rutherford Blvd, Murfreesboro, TN 37130</a></li>
+                      <li style="margin-bottom: 0.5rem;"><a href="tel:+16158958777" style="color: white; text-decoration: none;">(615) 895-8777</a></li>
+                      <li style="margin-bottom: 0.5rem;"><a href="mailto:cngliquors@gmail.com" style="color: white; text-decoration: none;">cngliquors@gmail.com</a></li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 style="color: #C9A962; margin-bottom: 1rem;">Follow Us</h3>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                      <a href="https://www.instagram.com/cngliquor/" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none; padding: 0.5rem;">Instagram</a>
+                      <a href="https://www.facebook.com/CNGLIQUOR" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none; padding: 0.5rem;">Facebook</a>
+                      <a href="https://www.youtube.com/@CNGWineandSpirits" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none; padding: 0.5rem;">YouTube</a>
+                      <a href="https://www.tiktok.com/@cngwinespirits" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none; padding: 0.5rem;">TikTok</a>
+                      <a href="https://www.pinterest.com/cngliquors" target="_blank" rel="noopener noreferrer" style="color: white; text-decoration: none; padding: 0.5rem;">Pinterest</a>
+                    </div>
+                  </div>
+                </div>
+                <div style="border-top: 1px solid #333; padding-top: 1rem; text-align: center;">
+                  <p>© 2026 CNG Wine & Spirits. All rights reserved. Designed & Developed By <a href="https://nashvilledigitalgroup.com/" target="_blank" rel="noopener noreferrer" style="color: #C9A962; text-decoration: none;">Nashville Digital Group</a></p>
+                  <p style="font-size: 0.875rem; margin-top: 0.5rem;">Must be 21 or older to purchase. Please drink responsibly.</p>
+                </div>
+              </div>
+            </footer>
   </div>
   <!-- React app will load from dist/assets/ -->
 </body>
